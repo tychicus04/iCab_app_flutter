@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "870696360156",
+    "firebase_url": "https://icab-booking-car-default-rtdb.firebaseio.com",
+    "project_id": "icab-booking-car",
+    "storage_bucket": "icab-booking-car.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870696360156:android:e75e0dee160885ee317c19",
+        "android_client_info": {
+          "package_name": "com.example.flutter_booking_car"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwfopxmZkaFFpzfEvD9f9Qw_9EHVEksYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

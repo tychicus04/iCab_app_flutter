@@ -1,10 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_booking_car/helper/asset_helper.dart';
-import 'package:flutter_booking_car/helper/image_helper.dart';
-import 'package:flutter_booking_car/src/constants/color_constants.dart';
+import 'package:flutter_booking_car/blocs/auth_blocs.dart';
+import 'package:flutter_booking_car/core/helper/asset_helper.dart';
+import 'package:flutter_booking_car/core/helper/image_helper.dart';
+import 'package:flutter_booking_car/core/constants/color_constants.dart';
+import 'package:flutter_booking_car/src/app.dart';
+import 'package:flutter_booking_car/src/screen/home_screen.dart';
 import 'package:flutter_booking_car/src/screen/register_screen.dart';
 import 'package:flutter_booking_car/src/widget/button_widget.dart';
+import 'package:flutter_booking_car/src/widget/loading_dialog.dart';
+import 'package:flutter_booking_car/src/widget/msg_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,8 +23,22 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
+  final AuthBloc authBloc = AuthBloc();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
+
+  void onLoginClicked() {
+    var bloc = MyApp.of(context)?.bloc;
+    LoadingDialog.showLoadingDialog(context, 'Loading...');
+    authBloc.signIn(_emailController.text, _passController.text, () {
+      LoadingDialog.hideLoadingDialog(context);
+      Navigator.of(context).pushNamed(HomeScreen.routeName);
+    }, (msg) {
+      LoadingDialog.hideLoadingDialog(context);
+      MsgDialog.showMsgDialog(context, 'Sign-In', msg);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,54 +76,66 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 145, 0, 20),
-                child: TextField(
-                  controller: _emailController,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: SizedBox(
-                      width: 50,
-                      child: Icon(FontAwesomeIcons.envelope)
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: ColorPallete.borderBox, 
-                        width: 1
+                child: StreamBuilder(
+                  stream: authBloc.emailController,
+                  builder: (context, snapshot) {
+                    return TextField(
+                      controller: _emailController,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.black
                       ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(6)
-                      )
-                    )
-                  ),
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        errorText: snapshot.hasError ? snapshot.error.toString() : null,
+                        prefixIcon: const SizedBox(
+                          width: 50,
+                          child: Icon(FontAwesomeIcons.envelope)
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPallete.borderBox, 
+                            width: 1
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6)
+                          )
+                        )
+                      ),
+                    );
+                  }
                 )
               ),
-              TextField(
-                  controller: _passController,
-                  obscureText: true,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: SizedBox(
-                      width: 50,
-                      child: Icon(FontAwesomeIcons.lock)
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: ColorPallete.borderBox, 
-                        width: 1
+              StreamBuilder(
+                stream: authBloc.passController,
+                builder: (context, snapshot) {
+                  return TextField(
+                      controller: _passController,
+                      obscureText: true,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.black
                       ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(6)
-                      )
-                    )
-                  ),
-                ),
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        errorText: snapshot.hasError ? snapshot.error.toString() : null,
+                        prefixIcon: const SizedBox(
+                          width: 50,
+                          child: Icon(FontAwesomeIcons.lock)
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPallete.borderBox, 
+                            width: 1
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6)
+                          )
+                        )
+                      ),
+                    );
+                }
+              ),
               Container(
                   constraints: BoxConstraints.loose(
                     const Size(double.infinity, 30)
@@ -123,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               ButtonWidget(
                 title: 'Log in', 
-                onTap: () {}
+                onTap: onLoginClicked
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
