@@ -3,6 +3,8 @@
         android:label="flutter_booking_car"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyCwfopxmZkaFFpzfEvD9f9Qw_9EHVEksYQ"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
